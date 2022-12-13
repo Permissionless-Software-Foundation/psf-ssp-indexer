@@ -1,7 +1,7 @@
 {
-  "name": "psf-slp-indexer",
+  "name": "psf-ssp-indexer",
   "version": "1.0.0",
-  "description": "Indexer for validating SLP transactions. Uses LevelDB.",
+  "description": "Indexer and REST API for PS006 Simple Store Protocol",
   "main": "index.js",
   "scripts": {
     "start": "node --max_old_space_size=16000 index.js",
@@ -19,10 +19,10 @@
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "license": "GPL-2.0",
   "apidoc": {
-    "title": "psf-slp-indexer",
+    "title": "psf-ssp-indexer",
     "url": "localhost:5000"
   },
-  "repository": "Permissionless-Software-Foundation/psf-slp-indexer",
+  "repository": "Permissionless-Software-Foundation/psf-ssp-indexer",
   "dependencies": {
     "@chris.troutner/retry-queue-commonjs": "1.0.8",
     "@chris.troutner/slp-validate": "1.2.2",

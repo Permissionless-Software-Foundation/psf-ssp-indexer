@@ -1,29 +1,17 @@
-# psf-slp-indexer
+# psf-ssp-indexer
 
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-This application crawls the Bitcoin Cash (BCH) blockchain and indexes all the SLP token transactions. This code base is intended to be a replacement for [SLPDB](https://github.com/Permissionless-Software-Foundation/docker-slpdb). The work is based on [this report](https://gist.github.com/christroutner/77c46f1fa9adaf593074d41a508a6401) and the work was funded by [this Flipstarter](https://flipstarter.fullstack.cash/).
-
-This indexer is one part of a collection of blockchain infrastructure. To understand how all the pieces fit together, read the [Cash Stack Documentation](https://permissionless-software-foundation.github.io/cashstack.info/).
+This is a blockchain indexer and REST API for logging BCH blockchain entries that follow the [PSF006 Simple Store Protocol](https://github.com/Permissionless-Software-Foundation/specifications/blob/master/ps006-simple-store-protocol.md). It is forked from the [psf-slp-indexer](https://github.com/Permissionless-Software-Foundation/psf-slp-indexer).
 
 ## Development Status
 
-Current status: **Beta**
+Current status: **Alpha**
 
 This project is using conventional development milestones:
 - Alpha = Under active development. Bugs are expected, things are expected to break.
 - Beta = Some bugs still exist, but code is mature enough for careful roll-out into production.
 - Production = Code has been heavily tested and code commits have slowed in frequency. App is ready for normal operators.
-
-Regular status updates will be reported at the [bi-weekly PSF Technical Steering Committee meetings](https://github.com/Permissionless-Software-Foundation/TSC/issues). Updates will also be reported in [this Telegram channel](https://t.me/psf_slp).
-
-**See the [developer documentation](./dev-docs) for more information.**
-
-### Videos
-
-- [Installing the psf-slp-indexer](https://youtu.be/5gF4ON9lRHI)
-- [Additional Infrastructure Videos](https://psfoundation.cash/video/) in the 'Dev Ops & Infrastructure' section.
-
 
 ## Features
 
@@ -43,13 +31,13 @@ Regular status updates will be reported at the [bi-weekly PSF Technical Steering
 
 ## Installation
 
-Customize the [slp-indexer.sh](./slp-indexer.sh) bash shell script to point to the a BCH full node with the standard JSON RPC. [docker-bchn](https://github.com/Permissionless-Software-Foundation/docker-bchn) is recommended.
+Customize the [ssp-indexer.sh](./slp-indexer.sh) bash shell script to point to the a BCH full node with the standard JSON RPC. [docker-bchn](https://github.com/Permissionless-Software-Foundation/docker-bchn) is recommended.
 
 ```
-git clone https://github.com/Permissionless-Software-Foundation/psf-slp-indexer
-cd psf-slp-indexer
+git clone https://github.com/Permissionless-Software-Foundation/psf-ssp-indexer
+cd psf-ssp-indexer
 npm install
-./slp-indexer.sh
+./ssp-indexer.sh
 ```
 
 **See the [developer documentation](./dev-docs) for more information.**
