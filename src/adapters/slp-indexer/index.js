@@ -40,7 +40,7 @@ class SlpIndexer {
   constructor (localConfig = {}) {
     // Open the indexer databases.
     this.levelDb = new LevelDb()
-    const { addrDb, tokenDb, txDb, statusDb, pTxDb, utxoDb } =
+    const { addrDb, tokenDb, txDb, statusDb, pTxDb, utxoDb, claimDb } =
       this.levelDb.openDbs()
     this.addrDb = addrDb
     this.tokenDb = tokenDb
@@ -48,6 +48,7 @@ class SlpIndexer {
     this.statusDb = statusDb
     this.pTxDb = pTxDb
     this.utxoDb = utxoDb
+    this.claimDb = claimDb
 
     // Encapsulate dependencies
     this.rpc = new RPC()
@@ -57,7 +58,8 @@ class SlpIndexer {
       txDb,
       statusDb,
       pTxDb,
-      utxoDb
+      utxoDb,
+      claimDb
     })
     this.cache = new Cache({ txDb })
     this.transaction = new Transaction({ txDb })
@@ -269,8 +271,8 @@ class SlpIndexer {
       console.log('Error trying to get status from leveldb')
       // New database, so there is no status. Create it.
       const status = {
-        startBlockHeight: 543376,
-        syncedBlockHeight: 543376
+        startBlockHeight: 770820,
+        syncedBlockHeight: 770820
       }
 
       await this.statusDb.put('status', status)
@@ -322,8 +324,9 @@ class SlpIndexer {
         // is burned in the same block that it was created.
         for (let i = 0; i < nonSlpTxs.length; i++) {
           const thisTxid = nonSlpTxs[i]
-          const burnResult = await this.filterBlock.deleteBurnedUtxos(thisTxid)
 
+          // Check if TXID burns a UTXO.
+          const burnResult = await this.filterBlock.deleteBurnedUtxos(thisTxid)
           if (!burnResult) {
             console.log(
               `deleteBurnedUtxos() errored on on txid ${thisTxid}. Coinbase?`
@@ -331,6 +334,22 @@ class SlpIndexer {
           }
         }
       }
+
+      // Check each of the non-SLP transaction to see if it matches the profile
+      // of a claim.
+      if(nonSlpTxs && nonSlpTxs.length) {
+        for (let i = 0; i < nonSlpTxs.length; i++) {
+          const thisTxid = nonSlpTxs[i]
+
+          // Check if this transaction is a Claim.
+          const isClaim = await this.transaction.isClaim(thisTxid)
+          if(isClaim) {
+            // Save the claim to the database.
+            await this.claimDb.put(isClaim.about, isClaim)
+          }
+        }
+      }
+
 
       // Create a zip-file backup every 'epoch' of blocks, but only in phase 1.
       // console.log(`blockHeight: ${blockHeight}, indexState: ${this.indexState}`)
@@ -535,9 +554,9 @@ class SlpIndexer {
         const tokenId = slpData.tokenId
         const isInBlacklist = this.blacklist.checkBlacklist(tokenId)
         if (isInBlacklist) {
-          console.log(
-            `Skipping TX ${tx}, it contains...\ntoken ${tokenId} which is in the blacklist.`
-          )
+          // console.log(
+          //   `Skipping TX ${tx}, it contains...\ntoken ${tokenId} which is in the blacklist.`
+          // )
 
           // Mark the transaction validity as 'null' to signal that this tx
           // has not been processed and the UTXO should be ignored.
@@ -597,13 +616,13 @@ class SlpIndexer {
       // But mark the TX as 'null', to signal to wallets that the UTXO should
       // be segregated so that it's not burned.
       if (
-        slpData.tokenType !== 1 &&
-        slpData.tokenType !== 65 &&
+        // slpData.tokenType !== 1 &&
+        // slpData.tokenType !== 65 &&
         slpData.tokenType !== 129
       ) {
-        console.log(
-          `Skipping TX ${txData.txid}, it is tokenType ${slpData.tokenType}, which is not yet supported.`
-        )
+        // console.log(
+        //   `Skipping TX ${txData.txid}, it is tokenType ${slpData.tokenType}, which is not yet supported.`
+        // )
 
         // Mark the transaction validity as 'null' to signal that this tx
         // has not been processed and the UTXO should be   ignored.
@@ -612,6 +631,8 @@ class SlpIndexer {
 
         return
       }
+
+      console.log('processData() slpData: ', slpData)
 
       // console.log(`txData: ${JSON.stringify(txData, null, 2)}`)
 
