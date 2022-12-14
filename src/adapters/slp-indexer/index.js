@@ -337,19 +337,18 @@ class SlpIndexer {
 
       // Check each of the non-SLP transaction to see if it matches the profile
       // of a claim.
-      if(nonSlpTxs && nonSlpTxs.length) {
+      if (nonSlpTxs && nonSlpTxs.length) {
         for (let i = 0; i < nonSlpTxs.length; i++) {
           const thisTxid = nonSlpTxs[i]
 
           // Check if this transaction is a Claim.
           const isClaim = await this.transaction.isClaim(thisTxid)
-          if(isClaim) {
+          if (isClaim) {
             // Save the claim to the database.
             await this.claimDb.put(isClaim.about, isClaim)
           }
         }
       }
-
 
       // Create a zip-file backup every 'epoch' of blocks, but only in phase 1.
       // console.log(`blockHeight: ${blockHeight}, indexState: ${this.indexState}`)

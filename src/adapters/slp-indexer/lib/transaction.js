@@ -912,7 +912,7 @@ class Transaction {
   }
 
   // Checks to see if a TX is a claim as per PS006.
-  async isClaim(txid) {
+  async isClaim (txid) {
     try {
       // Validate the txid input.
       if (!txid || txid === '' || typeof txid !== 'string') {
@@ -930,11 +930,11 @@ class Transaction {
       const opReturn = txDetails.vout[0].scriptPubKey.hex
       // console.log(`txid ${txid}, opReturn hex: ${opReturn}`)
 
-      const firstFourBytes = opReturn.slice(0,12)
+      const firstFourBytes = opReturn.slice(0, 12)
       // console.log(`opReturn firstFourBytes: ${firstFourBytes}`)
 
       // If the HEX of the OP_RETURN matches the signature of a claim.
-      if(firstFourBytes.includes('6a0400504d00')) {
+      if (firstFourBytes.includes('6a0400504d00')) {
         // console.log('---->PING<-----')
 
         // Decode the hex into normal text.
@@ -962,7 +962,7 @@ class Transaction {
 
       // No claim found, return false.
       return false
-    } catch(err) {
+    } catch (err) {
       console.error('Error in transaction.js/isClaim()')
       throw err
     }
