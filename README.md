@@ -13,6 +13,15 @@ This project is using conventional development milestones:
 - Beta = Some bugs still exist, but code is mature enough for careful roll-out into production.
 - Production = Code has been heavily tested and code commits have slowed in frequency. App is ready for normal operators.
 
+### Update 12/13/22
+I've modified the original psf-slp-indexer code to track only Group tokens with 'SSP' in their ticker. It also tracks Claims. There is an example script in the `examples` directory for making a claim.
+
+Claims are indexed in the LevelDB with a key that is equal to the 'about' field of the Claim. So if it's about a Store, then the `about` field will contain the store token ID. If the Claim is about another claim, the `about` field will contain the TXID of that Claim.
+
+First Store token is in block 770,821. First Claim is in block 770,824.
+
+The scripts in the `util` directory have been updated to retrieve Group tokens and Claims from the local database.
+
 ## Features
 
 - Written in [standard JavaScript](https://www.npmjs.com/package/standard), using the [Clean Architecture](https://troutsblog.com/blog/clean-architecture) design pattern.
